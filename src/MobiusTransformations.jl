@@ -10,8 +10,8 @@ export Mobius, Möbius, stereo
 include("StereographicProjections.jl")
 
 # Tolerance constants
-const NUM_TOL = 1e-12 # for printing,...
-const SPHERE_TOL = 1e-8 # for detect north pole
+# const NUM_TOL = 1e-12 # for printing,...
+# const SPHERE_TOL = 1e-8 # for detect north pole
 
 
 # Infinite to completing complaxe plane.
@@ -26,6 +26,7 @@ function set_infinity(infinity)
     INF[] = infinity
 end
 
+infinity() = INF[]
 
 # Möbius transformation
 """
@@ -70,7 +71,7 @@ MobiusTransformation(A) = MobiusTransformation(A...)
 # 1 args: Target vector -> 3 args
 # 2 args: Source, Target vectors -> 6 args
 # 1 args: arg is a Type, returns Identity (default ComplexF64)
-# 1 args: arg is a Matrix Q, returns "rotation by Q".
+# ## moved to MobiusSphere ## 1 args: arg is a Matrix Q, returns "rotation by Q".
 
 """
     Möbius(a, b, c, d)
@@ -111,23 +112,6 @@ function Möbius(x, y, z, X, Y, Z)
     m_image = Möbius(X, Y, Z) # (0, 1, Inf) -> (X, Y, Z)
     # No division performed.
     return m_image * inv(m_source) # (x, y, z) -> (X, Y, Z)
-end
-
-"""
-    Möbius(Q::AbstractMatrix, source=[0, 1, im])
-
-Given a 3D rotation `Q` (so, `Q*Q'=Id` and `det(Q)=1`), returns the Mobius transformation `m` corresponding to rotate the standard Riemann sphere by Q.
-That is, the map `m` is defined as `m(z) = p(Q*p(z))`, where `p = stereo()` is the standard stereographic projection.
-"""
-function Möbius(Q::AbstractMatrix, source=[0, 1, im])
-    p = stereo()
-    # We can set any source points.
-    # Compute target points.
-    source_sphere = p.(source)
-    target_sphere = [Q * P for P in source_sphere]
-    target = p.(target_sphere)
-
-    return Möbius(source, target)
 end
 
 """

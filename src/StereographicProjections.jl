@@ -8,17 +8,17 @@ end
 
 stereo(v) = StereographicProjection{eltype(v)}(v...)
 stereo_projection(v) = stereo(v)
-stereo() = stereo(zeros(Float64, 3))
+stereo(::Type{T}=Float64) where T = stereo(zeros(T, 3))
 
 # Helper function: get the center of the sphere we are projecting from.
 vec(proj::StereographicProjection) = [proj.x, proj.y, proj.z]
 
 # Helper function: compute north pole (focus of the projection)
-const NorthAxis = 2 # y for POV-Ray
+const NorthAxis = 3 # y for POV-Ray
 const OtherAxis = filter(x -> !(x == NorthAxis), 1:3)
 const NorthDir = begin
-    out = zeros(Float64, 3)
-    out[NorthAxis] = 1.0
+    out = zeros(Int, 3)
+    out[NorthAxis] = 1
     out
 end
 
