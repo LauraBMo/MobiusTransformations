@@ -46,11 +46,6 @@ struct MobiusTransformation{T} <: Function
 end
 
 # Dealing with diferent types
-"""
-    MobiusTransformation(a, b, c, d)
-
-Creates a Möbius transformation with coefficients a, b, c, d.
-"""
 MobiusTransformation(a, b, c, d) = MobiusTransformation(promote(a, b, c, d)...)
 
 # From array-alike objects
