@@ -90,14 +90,14 @@ Values of `Inf` are permitted.
 """
 function Möbius(x, y, z)
     if isinf(x)
-        return z, y - z, 1, 0
+        return Mobius(z, y - z, one(x), zero(x))
     elseif isinf(y)
-        return -z, x, -1, 1
+        return Mobius(-z, x, -one(x), one(x))
     elseif isinf(z)
-        return y - x, x, 0, 1
+        return Mobius(y - x, x, zero(x), one(x))
     else
         xy, yz = y - x, z - y
-        return MobiusTransformation(z * xy, x * yz, xy, yz)
+        return Mobius(z * xy, x * yz, xy, yz)
     end
 end
 
@@ -136,7 +136,7 @@ Möbius(source, target) = Möbius(source..., target...)
 
 Returns the identity Möbius transformation of type `T`.
 """
-Möbius(::Type{T}=ComplexF64) where T = Möbius(one(T), zero(T), zero(T), one(T))
+Möbius(::Type{T}=Int64) where T = Möbius(one(T), zero(T), zero(T), one(T))
 
 """
     isone(m::MobiusTransformation)
@@ -189,16 +189,21 @@ function Base.inv(m::MobiusTransformation)
     MobiusTransformation(d, -b, -c, a)
 end
 
-*(λ, m::MobiusTransformation) = MobiusTransformation(λ * Matrix(m))
-*(m::MobiusTransformation, λ) = *(λ, m)
+# *(λ, m::MobiusTransformation) = MobiusTransformation(λ * Matrix(m))
+# *(m::MobiusTransformation, λ) = *(λ, m)
 
 """
     *(m::MobiusTransformation, n::MobiusTransformation)
 
 Compose two Möbius transformations.
 """
-*(m::MobiusTransformation, n::MobiusTransformation) =
-    MobiusTransformation(Matrix(m) * Matrix(n))
+function *(m::MobiusTransformation, n::MobiusTransformation)
+    @unpack a, b, c, d = n
+    e, f, g, h = a, b, c, d
+    @unpack a, b, c, d = m
+    MobiusTransformation(a * e + b * g, a * f + b * h,
+                         c * e + d * g, c * f + d * h)
+end
 
 """
     ∘(m::MobiusTransformation, n::MobiusTransformation)
@@ -253,9 +258,9 @@ function show(io::IO, ::MIME"text/plain", m::MobiusTransformation)
 
     ## Print message
     print(io, "Möbius: ", eltype(m), newline,
-          numer, newline,
-          hline, newline,
-          denom)
+        numer, newline,
+        hline, newline,
+        denom)
 end
 
 end # of module MobiusTransformations.

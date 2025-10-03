@@ -8,7 +8,7 @@ end
 
 stereo(v) = StereographicProjection{eltype(v)}(v...)
 stereo_projection(v) = stereo(v)
-stereo(::Type{T}=Float64) where T = stereo(zeros(T, 3))
+stereo(::Type{T}=Int64) where T = stereo(zeros(T, 3))
 
 # Helper function: get the center of the sphere we are projecting from.
 vec(proj::StereographicProjection) = [proj.x, proj.y, proj.z]
