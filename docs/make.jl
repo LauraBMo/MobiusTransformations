@@ -7,6 +7,7 @@ makedocs(;
     modules=[MobiusTransformations],
     authors="LauBMo <laurea987@gmail.com> and contributors",
     sitename="MobiusTransformations.jl",
+    checkdocs=:exports,
     format=Documenter.HTML(;
         canonical="https://LauraBMo.github.io/MobiusTransformations.jl",
         edit_link="main",
