@@ -91,6 +91,8 @@ const MT = MobiusTransformations
         @test m(-2) ≈ 0
         @test m(1im) ≈ (1im + 2) / (3im + 4)
         @test m(Inf) ≈ 1 / 3
+        @test m(-Inf) ≈ 1 / 3             # -Inf is the same point as Inf
+        @test m(complex(0, Inf)) ≈ 1 / 3  # imaginary infinity too
 
         # z -> 1/z has a pole at 0
         invmap = Möbius(0, 1, 1, 0)
@@ -160,6 +162,8 @@ const MT = MobiusTransformations
 
         # hash is consistent with equality
         @test hash(Möbius(1, 2, 3, 4)) == hash(Möbius(2, 4, 6, 8))
+        # -0.0 normalizes to 0.0 (negative scalar multiple of the identity)
+        @test hash(Möbius(1, 0, 0, 1)) == hash(Möbius(-1, 0, 0, -1))
     end
 
     @testset "Matrix and broadcasting" begin
